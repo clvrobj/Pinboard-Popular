@@ -16,11 +16,11 @@ xml_keys = {'item': '{http://purl.org/rss/1.0/}item',
 pinbpop_url = 'http://feeds.pinboard.in/rss/popular/'
 post_twi_url = 'https://api.twitter.com/1/statuses/update.json'
 
-from local_conf.py import *
-consumer_key = _consumer_key
-consumer_secret = _consumer_secret
-token = _token
-token_secret = _token_secret
+from local_conf import *
+consumer_key = CONSUMER_KEY
+consumer_secret = CONSUMER_SECRET
+token = TOKEN
+token_secret = TOKEN_SECRET
 
 def sign_request(raw, key=None):
     from hashlib import sha1
@@ -91,10 +91,12 @@ def download_pop_xml():
 def parse_pop_xml():
     doc = etree.parse(file_name)
     items = doc.findall(xml_keys['item'])
-    for item in items[:10]:
+    for item in items[:5]:
         title = item.find(xml_keys['title']).text.encode('utf-8')
         link = item.find(xml_keys['link']).text.encode('utf-8')
-        post2twi('%s %s' % title, link)
+        post2twi('%s %s' % (title, link))
+        from time import sleep
+        sleep(2)
 
 if __name__ == '__main__':
     download_pop_xml()
