@@ -62,10 +62,17 @@ def post2twi(status):
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
     #print post_data_str
-    
-    req = urllib2.Request(post_twi_url, post_data_str, header)
-    response = urllib2.urlopen(req)
-    print response.read()
+
+    res = False
+    try:
+        req = urllib2.Request(post_twi_url, post_data_str, header)
+        response = urllib2.urlopen(req)
+        print response.read()
+        res = True
+    except (urllib2.URLError, urllib2.HTTPError):
+        print 'Request error.'
+
+    return res
 
     # to test with curl
     #print "curl --request 'POST' '%s' --data '%s' --header '%s' --verbose" % (post_twi_url, post_data_str, 'Authorization: %s' % headers_str)
@@ -91,13 +98,24 @@ def download_pop_xml():
 def parse_pop_xml():
     doc = etree.parse(file_name)
     items = doc.findall(xml_keys['item'])
-    for item in items[:5]:
-        title = item.find(xml_keys['title']).text.encode('utf-8')
-        link = item.find(xml_keys['link']).text.encode('utf-8')
-        post2twi('%s %s' % (title, link))
-        from time import sleep
-        sleep(2)
+    twi_count = 0
+    for item in items:
+        title = item.find(xml_keys['title']).text.encode('utf-8').strip()
+        link = item.find(xml_keys['link']).text.encode('utf-8').strip()
+        content = '%s %s' % (title, link)
+        if len(content) > 140:
+            tlen = len(content) - len(link) - 1
+            content = '%s %s' % (title[:tlen], link)
+        print content
+        if post2twi(content):
+            twi_count += 1
+            from time import sleep
+            sleep(1)
+        if twi_count >= 6: # 6 tweets at most
+            break
 
 if __name__ == '__main__':
     download_pop_xml()
     parse_pop_xml()
+    #post2twi('Test tweet2')
+    print '=================== Process finished %s =========================' % datetime.now().strftime('%Y%m%d %H:%M')
