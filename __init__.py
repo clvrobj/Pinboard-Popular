@@ -7,7 +7,7 @@ import random
 import string
 import urllib2
 from lxml import etree
-
+from douban_oauth_op import post2douban
 
 file_name = 'pinbpopxmltmp.xml'
 xml_keys = {'item': '{http://purl.org/rss/1.0/}item',
@@ -108,6 +108,7 @@ def parse_pop_xml():
             content = '%s %s' % (title[:tlen], link)
         print content
         if post2twi(content):
+            post2douban(content)
             twi_count += 1
             from time import sleep
             sleep(1)
