@@ -69,7 +69,6 @@ def post2twi(status):
         response = urllib2.urlopen(req)
         print response.read()
         res = True
-        print 'Tweet OK: %s' % status
     except urllib2.HTTPError, e:
         print 'Request error. ', e
 
