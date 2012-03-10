@@ -13,12 +13,14 @@ douban_access_token_url = 'http://www.douban.com/service/auth/access_token'
 douban_say_url = 'http://api.douban.com/miniblog/saying'
 douban_user_id = '47529301'
 sign_method = 'HMAC-SHA1'
-api_key = API_KEY
-api_key_secret = API_KEY_SECRET
-req_token_secret = REQ_TOKEN_SECRET
-req_token = REQ_TOKEN
-access_token = ACCESS_TOKEN
-access_token_secret = ACCESS_TOKEN_SECRET
+
+from local_conf import *
+api_key = DB_API_KEY
+api_key_secret = DB_API_KEY_SECRET
+req_token_secret = DB_REQ_TOKEN_SECRET
+req_token = DB_REQ_TOKEN
+access_token = DB_ACCESS_TOKEN
+access_token_secret = DB_ACCESS_TOKEN_SECRET
 
 def encode_uri(s):
     return urllib2.quote(s, safe='~()*!.')
