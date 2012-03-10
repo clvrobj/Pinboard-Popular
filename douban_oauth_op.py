@@ -75,7 +75,7 @@ def gen_access_token():
     print "curl --request 'POST' '%s' --data '%s' --verbose" % (douban_access_token_url, post_data_str)
     
 def post2douban(content):
-    content = """<?xml version='1.0' encoding='UTF-8'?>
+    entry = """<?xml version='1.0' encoding='UTF-8'?>
     <entry xmlns:ns0="http://www.w3.org/2005/Atom" xmlns:db="http://www.douban.com/xmlns/">
     <content>%s</content>
     </entry>""" % content
@@ -87,32 +87,37 @@ def post2douban(content):
     headers_data_sign.sort()
     headers_data_sign = '&'.join(headers_data_sign)
     headers_data_sign = 'POST&%s&%s' % (encode_uri(douban_say_url), encode_uri(headers_data_sign))
-    print headers_data_sign
+    #print headers_data_sign
     
     sign = sign_request(headers_data_sign, '%s&%s' % (api_key_secret, access_token_secret))
     headers_data['oauth_signature'] = sign
     headers_data['realm'] = 'http://zhangchi.de/'
-    print headers_data
+    #print headers_data
     
     headers_str = ', '.join(['%s="%s"' % (encode_uri(k), encode_uri(v)) for k, v in headers_data.items()])
     headers_str = 'OAuth %s' % headers_str
     header = {'Authorization': headers_str}
     
     header['Content-Type'] = 'application/atom+xml'
-    print header
+    #print header
     
     headers_str = ', '.join(['%s=%s' % (encode_uri(k), encode_uri(v)) for k, v in header.items()])
 
 #    print "curl --request 'POST' '%s' --data '%s' --header '%s' --verbose" % (douban_say_url, post_data_str, headers_str)
 
+    res = False
     try:
         conn = httplib.HTTPConnection("www.douban.com", 80)
-        conn.request('POST', douban_say_url, content, header)
-        res = conn.getresponse().read()
-        print res
+        conn.request('POST', douban_say_url, entry, header)
+        response = conn.getresponse().read()
+        print response
         conn.close()
+        res = True
+        print 'Douban OK: %s' % status
     except:
         print 'Adding douban saying request error.'
+
+    return res
 
 if __name__ == '__main__':
     #gen_req_token()
