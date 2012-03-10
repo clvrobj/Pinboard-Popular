@@ -69,8 +69,8 @@ def post2twi(status):
         response = urllib2.urlopen(req)
         print response.read()
         res = True
-    except (urllib2.URLError, urllib2.HTTPError):
-        print 'Request error.'
+    except urllib2.HTTPError, e:
+        print 'Request error. ', e
 
     return res
 
@@ -99,6 +99,7 @@ def parse_pop_xml():
     doc = etree.parse(file_name)
     items = doc.findall(xml_keys['item'])
     twi_count = 0
+    random.shuffle(items) # disrupt the list sort
     for item in items:
         title = item.find(xml_keys['title']).text.encode('utf-8').strip()
         link = item.find(xml_keys['link']).text.encode('utf-8').strip()
