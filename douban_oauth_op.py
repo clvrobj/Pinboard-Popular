@@ -113,7 +113,7 @@ def post2douban(content):
         print response
         conn.close()
         res = True
-        print 'Douban OK: %s' % status
+        print 'Douban OK: %s' % content
     except:
         print 'Adding douban saying request error.'
 
