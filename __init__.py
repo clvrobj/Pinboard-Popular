@@ -46,7 +46,7 @@ def add_status(title, link):
         tlen = len(content) - len(link) - 1
         content = '%s %s' % (title[:tlen], link)
     print content
-    post2twi(content):
+    post2twi(content)
     post2douban(content)
 
 
