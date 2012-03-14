@@ -40,17 +40,13 @@ def gen_req_token():
     post_data_sign.sort()
     post_data_sign = '&'.join(post_data_sign)
     post_data_sign = 'POST&%s&%s' % (encode_uri(douban_req_token_url), encode_uri(post_data_sign))
-    print post_data_sign
     
     sign = sign_request(post_data_sign, '%s&' % api_key_secret)
     post_data['oauth_signature'] = sign
-    print post_data
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
-    print post_data_str
 
     print "curl --request 'POST' '%s' --data '%s' --verbose" % (douban_req_token_url, post_data_str)
-    print 
 
 #    req = urllib2.Request(douban_req_token_url, post_data_str)
 #    response = urllib2.urlopen(req)
@@ -63,14 +59,11 @@ def gen_access_token():
     post_data_sign.sort()
     post_data_sign = '&'.join(post_data_sign)
     post_data_sign = 'POST&%s&%s' % (encode_uri(douban_access_token_url), encode_uri(post_data_sign))
-    print post_data_sign
     
     sign = sign_request(post_data_sign, '%s&%s' % (api_key_secret, req_token_secret))
     post_data['oauth_signature'] = sign
-    print post_data
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
-    print post_data_str
 
     print "curl --request 'POST' '%s' --data '%s' --verbose" % (douban_access_token_url, post_data_str)
     
@@ -87,19 +80,16 @@ def post2douban(content):
     headers_data_sign.sort()
     headers_data_sign = '&'.join(headers_data_sign)
     headers_data_sign = 'POST&%s&%s' % (encode_uri(douban_say_url), encode_uri(headers_data_sign))
-    #print headers_data_sign
     
     sign = sign_request(headers_data_sign, '%s&%s' % (api_key_secret, access_token_secret))
     headers_data['oauth_signature'] = sign
     headers_data['realm'] = 'http://zhangchi.de/'
-    #print headers_data
     
     headers_str = ', '.join(['%s="%s"' % (encode_uri(k), encode_uri(v)) for k, v in headers_data.items()])
     headers_str = 'OAuth %s' % headers_str
     header = {'Authorization': headers_str}
     
     header['Content-Type'] = 'application/atom+xml'
-    #print header
     
     headers_str = ', '.join(['%s=%s' % (encode_uri(k), encode_uri(v)) for k, v in header.items()])
 
