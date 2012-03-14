@@ -9,6 +9,8 @@ import urllib2
 from lxml import etree
 from douban_oauth_op import post2douban
 
+tweets_count_max = 3
+
 file_name = 'pinbpopxmltmp.xml'
 xml_keys = {'item': '{http://purl.org/rss/1.0/}item',
             'title': '{http://purl.org/rss/1.0/}title',
@@ -114,7 +116,7 @@ def parse_pop_xml():
             twi_count += 1
             from time import sleep
             sleep(1)
-        if twi_count >= 6: # 6 tweets at most
+        if twi_count >= tweets_count_max:
             break
 
 if __name__ == '__main__':
