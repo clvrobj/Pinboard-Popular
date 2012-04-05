@@ -6,6 +6,7 @@ import random
 import string
 import urllib2
 import httplib
+from datetime import datetime
 from subprocess import Popen, PIPE
 
 douban_req_token_url = 'http://www.douban.com/service/auth/request_token'
