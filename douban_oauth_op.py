@@ -5,8 +5,9 @@ import time
 import random
 import string
 import urllib2
-from datetime import datetime
 import httplib
+from datetime import datetime
+from subprocess import Popen, PIPE
 
 douban_req_token_url = 'http://www.douban.com/service/auth/request_token'
 douban_access_token_url = 'http://www.douban.com/service/auth/access_token'
@@ -46,7 +47,8 @@ def gen_req_token():
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
 
-    print "curl --request 'POST' '%s' --data '%s' --verbose" % (douban_req_token_url, post_data_str)
+    p = Popen(['curl', '-d', post_data_str, douban_req_token_url], stdout=PIPE)
+    print p.stdout.read()
 
 #    req = urllib2.Request(douban_req_token_url, post_data_str)
 #    response = urllib2.urlopen(req)
@@ -65,7 +67,8 @@ def gen_access_token():
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
 
-    print "curl --request 'POST' '%s' --data '%s' --verbose" % (douban_access_token_url, post_data_str)
+    p = Popen(['curl', '-d', post_data_str, douban_access_token_url], stdout=PIPE)
+    print p.stdout.read()
     
 def post2douban(content):
     entry = """<?xml version='1.0' encoding='UTF-8'?>
