@@ -47,7 +47,7 @@ def gen_req_token():
     
     post_data_str = '&'.join(['%s=%s' % (k, encode_uri(v)) for k,v in post_data.items()])
 
-    p = Popen(['curl', '-d', post_data_str, douban_req_token_url], stdin=PIPE, stdout=PIPE)
+    p = Popen(['curl', '-d', post_data_str, douban_req_token_url], stdout=PIPE)
     print p.stdout.read()
 
 #    req = urllib2.Request(douban_req_token_url, post_data_str)
