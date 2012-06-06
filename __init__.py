@@ -78,5 +78,3 @@ if __name__ == '__main__':
         sleep(1)
     conn.disconnect()
     print '=================== Process finished %s =========================' % datetime.now().strftime('%Y%m%d %H:%M')
-    
-    
