@@ -23,7 +23,7 @@ def init_mongo():
         from local_conf import DATABASE
         client = MongoClient(host=DATABASE['HOST'], port=DATABASE['PORT'])
         db = client[DATABASE['NAME']]
-        db.authenticate(DATABASE['USER'], DATABASE['PASSWORD'])
+        #db.authenticate(DATABASE['USER'], DATABASE['PASSWORD'])
         collection = db['bookmarks']
         return client, collection
     except ImportError:
@@ -69,9 +69,8 @@ def parse_pop_xml(max_count, collection):
 def add_status(title, link, collection):
     content = '%s %s' % (title, link)
     if len(content) > 140:
-        tlen = len(content) - len(link) - 1
+        tlen = 140 - len(link) - 1
         content = '%s %s' % (title[:tlen], link)
-    print content
     post2twi(content)
     # post2douban(content)
     if collection:
@@ -86,5 +85,5 @@ if __name__ == '__main__':
         add_status(item['title'], item['link'], collection)
         sleep(1)
     if conn:
-        conn.disconnect()
+        conn.close()
     print '=================== Process finished %s =========================' % datetime.now().strftime('%Y%m%d %H:%M')

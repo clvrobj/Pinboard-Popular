@@ -1,7 +1,8 @@
-*.py[cod]
+*.py[cod~]
 .Python
 venv
 venv/*
 .python-version
 local_conf.py
+log
 pinbpopxmltmp.xml
