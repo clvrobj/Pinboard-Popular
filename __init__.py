@@ -55,13 +55,17 @@ def parse_pop_xml(max_count, collection):
     i = 0
     while len(ret) < max_count and i < len(items):
         item = items[i]
-        link = item.find(xml_keys['link']).text.encode('utf-8').strip()
+        link = item.find(xml_keys['link']).text.strip()
         if collection and check_tweeted_link(collection, link):
             i += 1
             continue
-        title = item.find(xml_keys['title']).text.encode('utf-8').strip()
+        title = item.find(xml_keys['title']).text.strip()
         if title == 'Twitter':
-            title = item.find(xml_keys['description']).text.encode('utf-8').strip()
+            title = item.find(xml_keys['description'])
+            title = title.text.strip() if title is not None else ''
+            title = '%s %s' % (title, link)
+        elif item.find(xml_keys['description']):
+            title = title + ' ' + item.find(xml_keys['description']).text.strip()
         ret.append({'title':title, 'link':link})
         i += 1
     return ret
@@ -69,7 +73,7 @@ def parse_pop_xml(max_count, collection):
 def add_status(title, link, collection):
     content = '%s %s' % (title, link)
     if len(content) > 140:
-        tlen = 140 - len(link) - 1
+        tlen = 140 - len(link) - 2
         content = '%s %s' % (title[:tlen], link)
     post2twi(content)
     # post2douban(content)
