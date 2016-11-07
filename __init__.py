@@ -63,7 +63,6 @@ def parse_pop_xml(max_count, collection):
         if title == 'Twitter':
             title = item.find(xml_keys['description'])
             title = title.text.strip() if title is not None else ''
-            title = '%s %s' % (title, link)
         elif item.find(xml_keys['description']):
             title = title + ' ' + item.find(xml_keys['description']).text.strip()
         ret.append({'title':title, 'link':link})
@@ -71,10 +70,12 @@ def parse_pop_xml(max_count, collection):
     return ret
 
 def add_status(title, link, collection):
+    # Twitter changed the 140-character limit in 2016 May
+    # https://blog.twitter.com/express-even-more-in-140-characters
     content = '%s %s' % (title, link)
-    if len(content) > 140:
-        tlen = 140 - len(link) - 2
-        content = '%s %s' % (title[:tlen], link)
+    if len(title) > 140:
+        title = title[:136] + '...'
+    content = '%s %s' % (title, link)
     post2twi(content)
     # post2douban(content)
     if collection:
