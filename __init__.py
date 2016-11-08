@@ -60,22 +60,30 @@ def parse_pop_xml(max_count, collection):
             i += 1
             continue
         title = item.find(xml_keys['title']).text.strip()
+        is_twitter = False
         if title == 'Twitter':
             title = item.find(xml_keys['description'])
             title = title.text.strip() if title is not None else ''
+            is_twitter = True
         elif item.find(xml_keys['description']):
             title = title + ' ' + item.find(xml_keys['description']).text.strip()
-        ret.append({'title':title, 'link':link})
+        ret.append({'title':title, 'link':link, 'is_twitter':is_twitter})
         i += 1
     return ret
 
-def add_status(title, link, collection):
+def add_status(title, link, is_twitter, collection):
     # Twitter changed the 140-character limit in 2016 May
-    # https://blog.twitter.com/express-even-more-in-140-characters
-    content = '%s %s' % (title, link)
-    if len(title) > 140:
-        title = title[:136] + '...'
-    content = '%s %s' % (title, link)
+    # https://blog.twitter.com/2016/doing-more-with-140-characters
+    if is_twitter == True and \
+       (link.find('photo') != -1 or link.find('video') != -1):
+        if len(title) > 140:
+            title = title[:136] + '...'
+        content = '%s %s' % (title, link)
+    else:
+        content = '%s %s' % (title, link)
+        if len(content) > 140:
+            tlen = 140 - len(link) - 5
+            content = '%s %s' % (title[:tlen] + '...', link)
     post2twi(content)
     # post2douban(content)
     if collection:
@@ -87,7 +95,7 @@ if __name__ == '__main__':
     conn, collection = init_mongo()
     items = parse_pop_xml(TWEETS_COUNT_MAX, collection)
     for item in items:
-        add_status(item['title'], item['link'], collection)
+        add_status(item['title'], item['link'], item['is_twitter'], collection)
         sleep(1)
     if conn:
         conn.close()
