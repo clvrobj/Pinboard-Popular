@@ -77,13 +77,13 @@ def add_status(title, link, is_twitter, collection):
     if is_twitter == True and \
        (link.find('photo') != -1 or link.find('video') != -1):
         if len(title) > 140:
-            title = title[:136] + '...'
+            title = title[:138] + '…'
         content = '%s %s' % (title, link)
     else:
         content = '%s %s' % (title, link)
         if len(content) > 140:
-            tlen = 140 - len(link) - 5
-            content = '%s %s' % (title[:tlen] + '...', link)
+            tlen = 140 - len(link) - 3
+            content = '%s %s' % (title[:tlen] + '…', link)
     post2twi(content)
     # post2douban(content)
     if collection:
