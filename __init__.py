@@ -9,6 +9,8 @@ from twitter_oauth_op import post2twi
 from douban_oauth_op import post2douban
 
 TWEETS_COUNT_MAX = 3
+TWEET_LENLIMIT = 280
+TWEET_SHORTURL_LEN = 23
 
 file_name = 'pinbpopxmltmp.xml'
 xml_keys = {'item': '{http://purl.org/rss/1.0/}item',
@@ -74,15 +76,16 @@ def parse_pop_xml(max_count, collection):
 def add_status(title, link, is_twitter, collection):
     # Twitter changed the 140-character limit in 2016 May
     # https://blog.twitter.com/2016/doing-more-with-140-characters
+    # Expand to 280 in Nov 2017 http://bit.ly/2SBG1Yw
     if is_twitter == True and \
        (link.find('photo') != -1 or link.find('video') != -1):
-        if len(title) > 140:
-            title = title[:138] + '…'.decode('utf-8')
+        if len(title) > TWEET_LENLIMIT:
+            title = title[:TWEET_LENLIMIT - 2] + '…'.decode('utf-8')
         content = '%s %s' % (title, link)
     else:
         content = '%s %s' % (title, link)
-        if len(content) > 140:
-            tlen = 140 - len(link) - 3
+        if len(title) + 1 + TWEET_SHORTURL_LEN > TWEET_LENLIMIT:
+            tlen = TWEET_LENLIMIT - TWEET_SHORTURL_LEN - 3
             content = '%s %s' % (title[:tlen] + '…'.decode('utf-8'), link)
     post2twi(content)
     # post2douban(content)
